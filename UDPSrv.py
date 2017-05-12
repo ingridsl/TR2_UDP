@@ -20,28 +20,43 @@ ack = []
 print 'The server is ready to receive'
 #envia/recebe dados
 while 1:
-	received_hash=[]
+	received_bin=[]
 	received_message = []
 	full_info, clientAddress, = serverSocket.recvfrom(2048)
 	
 	print full_info
-	received_hash = full_info[0:34]
-	message = full_info[34:]
-	message+"\0"
+	name = full_info
+	#received_hash = full_info[0:34]
+	#message = full_info[34:]
+	#message+"\0"
+	message, middle, received_bin = name.partition(" ")
+	print message + "\n" + received_bin
 
-	print "\nreceived_hash: " + received_hash
+
+
+
+
+	print "\nreceived_bin: " + received_bin
 	print "\nreceived_message: " + message
 
 #		check value of checksum received (c) against checksum calculated (h) - NOT CORRUPT
-	#c = rcvpkt[-1]
-	#del rcvpkt[-1]
-	calculated_hash = hashlib.md5(message)
-	#print c
-	calculated_hash.update(message)
-	calculated_hash.digest()
-	print "\ncalculated_hash.digest(): " + str(calculated_hash)
-	print '\nthe end: '
-	if received_hash == calculated_hash:
+
+	newmes = ' '.join(format(ord(x), 'b') for x in message)
+	print "\nbinario da mensagem: " + newmes
+
+	calculated_bin = 0
+	tam = len(newmes)
+
+	string = newmes
+	for x in range(0, tam):
+			if(newmes[x]=='1')or (newmes[x] =='0'):
+				calculated_bin+= ord(newmes[x])-48
+
+
+	print "\nsoma dos binarios: " + str(calculated_bin)
+
+	#		check value of expected seq number against seq number received - IN ORDER 
+	if str(received_bin) == str(calculated_bin):
 		print '\nAEEEEEEEE'
 	else:
 		print "\nerror detected"
