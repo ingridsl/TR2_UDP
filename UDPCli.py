@@ -11,33 +11,35 @@ serverPort = 12000 	# porta do servidor
 
 # criando socket
 clientSocket = socket(AF_INET, SOCK_DGRAM)
+seq = 0
+while(1):
+	#funcionamento
+	message = raw_input('Input lowercase sentence:') 
+	newmes = ' '.join(format(ord(x), 'b') for x in message)
+	print "\nbinario da mensagem: " + newmes
 
-#funcionamento?
-message = raw_input('Input lowercase sentence:') 
-newmes = ' '.join(format(ord(x), 'b') for x in message)
-print "\nbinario da mensagem: " + newmes
+	val = 0
+	tam = len(newmes)
 
-val = 0
-tam = len(newmes)
+	string = newmes
+	for x in range(0, tam):
+			if(newmes[x]=='1')or (newmes[x] =='0'):
+				val+= ord(newmes[x])-48
 
-string = newmes
-for x in range(0, tam):
-		if(newmes[x]=='1')or (newmes[x] =='0'):
-			val+= ord(newmes[x])-48
+	print "\nsoma dos binarios: " + str(val)
+	#envia/recebe dados
+	#checksum = hashlib.md5()
+	#md5 = checksum
+	#checksum.update (message)
+	#checksum.digest()
+	#print len(str(checksum))
+	#print str(checksum)
 
-print "\nsoma dos binarios: " + str(val)
-#envia/recebe dados
-#checksum = hashlib.md5()
-#md5 = checksum
-#checksum.update (message)
-#checksum.digest()
-#print len(str(checksum))
-#print str(checksum)
-
-clientSocket.sendto(message + " " + str(val),(serverName, serverPort)) 
-#clientSocket.sendto(md5,(serverName, serverPort))
-modifiedMessage, serverAddress = clientSocket.recvfrom(2048) 
-print modifiedMessage
+	clientSocket.sendto(message + " " + str(val) + " " + str(seq),(serverName, serverPort)) 
+	#clientSocket.sendto(md5,(serverName, serverPort))
+	modifiedMessage, serverAddress = clientSocket.recvfrom(2048) 
+	print modifiedMessage
+	seq += 1
 
 #fechar socket
 clientSocket.close()
