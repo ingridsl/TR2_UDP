@@ -36,7 +36,7 @@ while message:
 	#checksum.update (message)
 	#checksum.digest()
 	#print len(str(checksum))
-	print "sequence number: " + str(seq)
+	print "sequence number" + str(seq)
 	clientSocket.sendto(message + "*" + str(val) + "*" + str(seq),(serverName, serverPort)) 
 	#clientSocket.sendto(md5,(serverName, serverPort))
 	modifiedMessage, serverAddress = clientSocket.recvfrom(2048) 

@@ -67,5 +67,5 @@ while 1:
 		else: #fora da ordem
 			print '\nerror detected - OUT OF ORDER'
 	else:
-		print "\nerror detected - CORRUPTION"
+		print "\nerror detected"
 		
