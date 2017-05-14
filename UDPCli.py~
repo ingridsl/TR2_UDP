@@ -54,7 +54,6 @@ while not fim or window:
 			for i in range(5): #introduz 5 bits errados a mensagem
 				if message == '':
 					fim = True 
-					break
 				randByte = random.randint(0, len(listMsg)-1)
 				altByte = ord(listMsg[randByte]) & error
 				listMsg[randByte] = struct.pack("B", altByte)

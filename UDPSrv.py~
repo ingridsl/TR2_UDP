@@ -1,10 +1,4 @@
 from socket import *
-import pickle
-import hashlib
-import sys
-import os
-import math
-import struct
 import time
 import random
 serverPort = 12000	# porta do servidor
