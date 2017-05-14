@@ -34,10 +34,10 @@ while 1:
 		#received_hash = full_info[0:34]
 		#message = full_info[34:]
 		#message+"\0"
-		message, middle, received_bin = full_info.partition("*")
+		message, middle, received_cs = full_info.partition("*")
 		#print message + "\n" + received_bin
 
-		received_bin, middle, sequence_number = received_bin.partition("*")
+		received_cs, middle, sequence_number = received_cs.partition("*")
 		#print received_bin + "\n" + sequence_number
 
 		#print "\nreceived_bin: " + received_bin
@@ -45,38 +45,49 @@ while 1:
 
 		#	check value of checksum received (c) against checksum calculated (h) - NOT CORRUPT
 
-		newmes = ' '.join(format(ord(x), 'b') for x in message)
+		#newmes = ' '.join(format(ord(x), 'b') for x in message)
 		#print "\nbinario da mensagem: " + newmes
 
-		calculated_bin = 0
-		tam = len(newmes)
+		#calculated_bin = 0
+		#tam = len(newmes)
 
-		string = newmes
-		for x in range(0, tam):
-				if(newmes[x] == '1') or (newmes[x] == '0'):
-					calculated_bin += ord(newmes[x])-48
+		#string = newmes
+		#for x in range(0, tam):
+		#	if(newmes[x] == '1') or (newmes[x] == '0'):
+		#		calculated_bin += ord(newmes[x])-48
+
+		auxMsg = message
+		sum = 0
+		if (len(auxMsg) % 2) != 0:
+			auxMsg += "0"
+		for i in range(0, len(auxMsg), 2):
+			msg16 = ord(auxMsg[i]) + (ord(auxMsg[i+1]) << 8)
+			sum += msg16
+			sum = (sum & 0xffff) + (sum >> 16)
+		calculated_cs = ~sum & 0xffff
 
 		#print "\nreceived_bin: " + received_bin
-		print "\nsoma dos binarios calculada: " + str(calculated_bin)
-		print "sequence number: " + str(seq_exp)
+		#print "\nsoma dos binarios calculada: " + str(calculated_bin)
+		print "\nChecksum calculado: " + str(calculated_cs)
+		print "Sequence number: " + str(seq_exp)
 
 		#	check value of expected seq number against seq number received - IN ORDER 
-		if str(received_bin) == str(calculated_bin): # recebido sem estar corrompido
+		if str(received_cs) == str(calculated_cs): # recebido sem estar corrompido
 			if(str(sequence_number) == str(seq_exp)): #na ordem
 				r = random.random()
 				if (r <= 0.1): #simulacao de perda de pacote, probabilidade de 0.1
 					print '\nSimulating packet loss'
 					continue
-				if (int(calculated_bin) == 0):
+				if (message == ''):
 					endoffile = True
 				modifiedMessage = message.upper()
-				ackmsg = modifiedMessage + "*" + str(calculated_bin) + "*" + str(seq_exp)
+				ackmsg = modifiedMessage + "*" + str(calculated_cs) + "*" + str(seq_exp)
 				serverSocket.sendto(ackmsg, clientAddress)
 				seq_exp += 1
 			else: #fora da ordem
 				print '\nerror detected - OUT OF ORDER'
 				modifiedMessage = message.upper()
-				ackmsg = modifiedMessage + "*" + str(calculated_bin) + "*" + str(seq_exp)
+				ackmsg = modifiedMessage + "*" + str(calculated_cs) + "*" + str(seq_exp)
 				serverSocket.sendto(ackmsg, clientAddress)
 		else:
 			print "\nerror detected - CORRUPTION"
