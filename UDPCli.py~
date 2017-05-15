@@ -19,9 +19,6 @@ seq = 0
 windowSize = 7
 window = []
 fim = False
-#while(1):
-#funcionamento
-#message = raw_input('Input lowercase sentence:') 
 f = open ("arq_teste.txt")
 lastackrcv = time.time()
 
@@ -47,13 +44,11 @@ while not fim or window:
 		window.append(sndpkg)
 
 		r = random.random()
-		if (r <= 0.1): #simulacao de dado corrompido, probabilidade de 0.1
+		if (message != '') and (r <= 0.1): #simulacao de dado corrompido, probabilidade de 0.1
 			print '\033[91m' + '\nSimulating bit error' + '\033[0m'
 			error = random.getrandbits(8)
 			listMsg = list(message)
 			for i in range(5): #introduz 5 bits errados a mensagem
-				if message == '':
-					fim = True 
 				randByte = random.randint(0, len(listMsg)-1)
 				altByte = ord(listMsg[randByte]) & error
 				listMsg[randByte] = struct.pack("B", altByte)
@@ -69,7 +64,7 @@ while not fim or window:
 	try:
 		ackMessage, serverAddress = clientSocket.recvfrom(2048)
 		r = random.random()
-		if (r <= 0.05): #simulacao de perda de pacote, probabilidade de 0.05
+		if not fim and (r <= 0.05): #simulacao de perda de pacote, probabilidade de 0.05
 			print  '\033[91m'+'\nSimulating acknowledgement loss\n'+'\033[0m'
 			continue
 

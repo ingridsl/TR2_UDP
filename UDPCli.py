@@ -63,10 +63,10 @@ while not fim or window:
 
 	try:
 		ackMessage, serverAddress = clientSocket.recvfrom(2048)
-		r = random.random()
-		if not fim and (r <= 0.05): #simulacao de perda de pacote, probabilidade de 0.05
-			print  '\033[91m'+'\nSimulating acknowledgement loss\n'+'\033[0m'
-			continue
+		#r = random.random()
+		#if not fim and (r <= 0.05): #simulacao de perda de pacote, probabilidade de 0.05
+		#	print  '\033[91m'+'\nSimulating acknowledgement loss\n'+'\033[0m'
+		#	continue
 
 		modifiedMessage, middle, received_cs = ackMessage.partition("*")
 		received_cs, middle, exp_seq = received_cs.partition("*")
