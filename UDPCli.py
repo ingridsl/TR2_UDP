@@ -13,7 +13,7 @@ serverPort = 12000 	# porta do servidor
 
 # criando socket
 clientSocket = socket(AF_INET, SOCK_DGRAM)
-clientSocket.settimeout(0.01) #0.001
+clientSocket.settimeout(0.001)
 base = 0
 seq = 0
 windowSize = 7
@@ -63,10 +63,6 @@ while not fim or window:
 
 	try:
 		ackMessage, serverAddress = clientSocket.recvfrom(2048)
-		#r = random.random()
-		#if not fim and (r <= 0.05): #simulacao de perda de pacote, probabilidade de 0.05
-		#	print  '\033[91m'+'\nSimulating acknowledgement loss\n'+'\033[0m'
-		#	continue
 
 		modifiedMessage, middle, received_cs = ackMessage.partition("*")
 		received_cs, middle, exp_seq = received_cs.partition("*")
@@ -81,7 +77,7 @@ while not fim or window:
 			break;
 
 	except:
-		if (time.time()-lastackrcv > 0.1): #0.01
+		if (time.time()-lastackrcv > 0.01):
 			print '\nERRO: ' + str(base)
 			for i in window:
 				clientSocket.sendto(i,(serverName, serverPort)) 
