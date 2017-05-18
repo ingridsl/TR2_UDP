@@ -17,6 +17,7 @@ clientSocket.settimeout(0.001)
 base = 0
 seq = 0
 windowSize = 7
+print "tamanho da janela = 7"
 window = []
 fim = False
 f = open ("arq_teste.txt")
@@ -60,6 +61,9 @@ while not fim or window:
 		if message == '':
 			fim = True 
 		message = f.readline()
+	else:
+		if not(seq < base + windowSize):
+			print "buffer cheio..."
 
 	try:
 		ackMessage, serverAddress = clientSocket.recvfrom(2048)
@@ -68,10 +72,11 @@ while not fim or window:
 		received_cs, middle, exp_seq = received_cs.partition("*")
 		print '\033[93m' + modifiedMessage + '\033[0m'
 
-		while int(exp_seq) > int(base) and window:
+		while int(exp_seq) > int(base) and window: #andando com janela
 			lastackrcv = time.time()
 			del window[0]
 			base += 1
+			print "movimentando janela... base = " + str(base)
 
 		if fim and (len(window) == 1):
 			break;
